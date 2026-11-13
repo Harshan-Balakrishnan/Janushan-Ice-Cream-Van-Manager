@@ -25,3 +25,7 @@ Only a Supabase publishable key is in the browser. Never commit service-role key
 
 ## Limitations
 Offline mode caches the application shell only. Database operations require internet; no offline sale queue is enabled because it can cause duplicate transactions or stock divergence. Printable receipts, push notifications, export/backup and advanced profit reports remain planned.
+
+## Deployment URL
+
+https://harshan-balakrishnan.github.io/Janushan-Ice-Cream-Van-Manager/
