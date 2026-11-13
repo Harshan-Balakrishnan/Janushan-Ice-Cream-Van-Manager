@@ -13,12 +13,12 @@ Mobile-first PWA for the Janushan Ice Cream van business.
 - Audit log and protected server-side database operations.
 - Installable cached app shell.
 
-## Deploy
-1. Enable Email/Password in Supabase Auth.
-2. Add your GitHub Pages URL to Supabase Auth URL Configuration (Site URL and Redirect URLs).
-3. In GitHub Settings → Pages, select GitHub Actions.
-4. The Pages workflow deploys on pushes to main.
-5. Open the deployed URL, sign up as owner, create the business, and invite staff from Team.
+## Deploy with GitHub Pages
+1. Open repository Settings → Pages.
+2. Under Build and deployment, choose **Deploy from a branch**.
+3. Select branch **main** and folder **/(root)**, then Save.
+4. Wait for GitHub Pages to publish the site.
+5. Open the Pages URL, sign up as the owner, create the business, and add staff from Team.
 
 ## Security
 Only a Supabase publishable key is in the browser. Never commit service-role keys. RLS protects rows. Operational writes use membership-checked RPCs. Financial and stock ledgers should be corrected by adding entries, not editing history.
