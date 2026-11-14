@@ -698,6 +698,8 @@ async function ownerCentrePage(v){
  const closing=reviewed.filter(x=>x.count_date<=end).slice(-1)[0];
  const opening=closing?reviewed.filter(x=>x.count_date<closing.count_date&&x.count_date<=start).slice(-1)[0]:null;
  const recon=opening&&closing?periodReconciliation(opening,closing):null;
+ const stockVariance=closing?(closing.stock_count_lines||[]).reduce((a,x)=>a+Math.abs(Number(x.variance||0)),0):null;
+ const cashVariance=recon?recon.cashVariance:null;
  const daily=Array.from({length:days},(_,i)=>{
   const date=dateOffset(days-1-i),entry=cashRows.find(x=>x.entry_date===date);
   const exp=expenseRows.filter(x=>x.paid_from==='cash'&&colomboDate(x.spent_at)===date).reduce((a,x)=>a+Number(x.amount||0),0);
@@ -725,8 +727,6 @@ async function ownerCentrePage(v){
  for(const event of eventRows){const stat=staffStats.get(event.actor_user_id);if(!stat)continue;stat.events++;if(event.event_type==='cash_closeout_saved')stat.cash++;else if(event.event_type==='expense_recorded')stat.expenses++;else if(event.event_type==='stock_count_submitted'||event.event_type==='stock_count_reviewed')stat.counts++;else if(event.event_type==='stock_movement_recorded')stat.movements++}
  const attributable=eventRows.filter(x=>staffStats.has(x.actor_user_id)).length;
  const staffRows=attributable?Array.from(staffStats.values()).map(s=>'<tr><td><strong>'+esc(s.email)+'</strong><small class="table-subtext">'+esc(s.role)+'</small></td><td>'+s.cash+'</td><td>'+s.expenses+'</td><td>'+s.counts+'</td><td>'+s.movements+'</td><td>'+s.events+'</td></tr>').join(''):'';
- const stockVariance=closing?(closing.stock_count_lines||[]).reduce((a,x)=>a+Math.abs(Number(x.variance||0)),0):null;
- const cashVariance=recon?recon.cashVariance:null;
  const trendRows=daily.filter(x=>x.recorded).map(x=>[x.date,money(x.value)]);
  const reportRows=[
   ['Metric','Value'],['Period start',start],['Period end',end],['Cash entries',cashRows.length],
