@@ -25,6 +25,10 @@ const emailValidationWorks =
   !emailPattern.test('name@');
 
 const checks = [
+  ['mobile five-item navigation and overflow menu', app.includes('mobilePrimaryNav') && app.includes('more-menu')],
+  ['dashboard quick actions and empty catalogue guidance', app.includes('QuickActions') && app.includes('StartCatalogue')],
+  ['responsive product cards and search', app.includes('product-card') && app.includes('product-filter')],
+  ['store logo live preview handler', app.includes("$('#store-logo-file').onchange")],
   ['password recovery event', app.includes("PASSWORD_RECOVERY")],
   ['recovery screen state', app.includes('authRecoveryActive')],
   ['password update handler', app.includes('db.auth.updateUser({password})')],
@@ -33,7 +37,7 @@ const checks = [
   ['safe auth error mapping', app.includes('function authErrorMessage')],
   ['email validation accepts Gmail and rejects malformed input', emailValidationWorks],
   ['GitHub Pages redirect (no localhost)', !app.includes('localhost:3000')],
-  ['service worker cache v6', sw.includes("janushan-pwa-v6")],
+  ['service worker cache v7', sw.includes("janushan-pwa-v7")],
   ['PWA manifest start URL', manifest.start_url === './'],
   ['PWA manifest scope', manifest.scope === './'],
 ];
