@@ -25,11 +25,18 @@ const emailValidationWorks =
   !emailPattern.test('name@');
 
 const checks = [
+  ['daily cash close-out clearly identifies physical cash after expenses', app.includes('When the van returns') && app.includes('Physical cash in hand after expenses') && app.includes('save_daily_cash_entry')],
+  ['expense entry supports the actual expense date and payment source', app.includes('Expense date') && app.includes("p_paid_from:$('#ef').value") && app.includes('Choose a valid expense date.')],
+  ['periodic stock count has searchable product list', app.includes('count-search') && app.includes('data-count-search') && app.includes('periodic count, not a daily sales task')],
+  ['stock movement requires a whole number and an explanatory reason', app.includes('Enter a whole-number quantity greater than zero.') && app.includes('Enter a reason for this stock movement.')],
+  ['Janushan brand theme is fixed to navy white and blue', app.includes("root.dataset.theme='blue'") && !app.includes('id="store-theme"') && fs.readFileSync('styles.css','utf8').includes('--navy:#10213d')],
+  ['operational forms use responsive mobile layout', fs.readFileSync('styles.css','utf8').includes('.cash-form-grid{grid-template-columns:1fr}') && fs.readFileSync('styles.css','utf8').includes('.count-input-list{grid-template-columns:1fr}')],
+
   ['van-first navigation groups and owner-only owner centre', app.includes("label:'Van operations'") && app.includes("g.items.filter(x=>x!=='Owner centre'||role==='owner')")],
   ['van-first home uses daily cash close-out and periodic stock counts', app.includes('VanRunDescription') && app.includes('CountOnlyWhenNeeded') && app.includes('NoIndividualSalesReminder') && app.includes('assets/logo.webp')],
   ['van-first dashboard keeps individual sale entry out of staff workflow', app.includes('No customer-by-customer sales entry.') && app.includes('NoIndividualSalesReminder')],
   ['van workspace is responsive and uses dedicated visual system', fs.readFileSync('styles.css','utf8').includes('.van-run-card') && fs.readFileSync('styles.css','utf8').includes('.van-quick-actions')],
-  ['PWA cache v14', fs.readFileSync('sw.js','utf8').includes('janushan-pwa-v15')],
+  ['PWA cache v16 for operations quality pass', fs.readFileSync('sw.js','utf8').includes('janushan-pwa-v16')],
 
   ['owner review signals use recorded cash and expense baselines', app.includes('Unusually high cash close-out') && app.includes('Expense spike') && app.includes('median')],
   ['cash forecast is based on recorded business outings', app.includes('Next 7 business outings') && app.includes('Next 30 business outings') && app.includes('avgPerOuting')],
@@ -69,7 +76,7 @@ const checks = [
   ['safe auth error mapping', app.includes('function authErrorMessage')],
   ['email validation accepts Gmail and rejects malformed input', emailValidationWorks],
   ['GitHub Pages redirect (no localhost)', !app.includes('localhost:3000')],
-  ['service worker cache v13 with user-approved update activation', sw.includes('janushan-pwa-v15') && sw.includes('cache:') && sw.includes('SKIP_WAITING')],
+  ['service worker cache v16 with user-approved update activation', sw.includes('janushan-pwa-v16') && sw.includes('cache:') && sw.includes('SKIP_WAITING')],
   ['separate Reports workspace with selectable reviewed count pairs', app.includes('function reportsPage(v)') && app.includes('janReportOpening') && app.includes('janReportClosing')],
   ['stock count is a dedicated workflow with duplicate-day protection', app.includes('CountAlreadySubmitted') && app.includes('todayCount')],
   ['daily cash close-out validates a blank amount', app.includes("raw.trim()===''") && app.includes('save_daily_cash_entry')],

@@ -88,3 +88,18 @@ Run `npm test` to validate JavaScript syntax, required authentication handlers, 
 - Updated the install manifest to use dedicated 192px and 512px PNG icons.
 
 **Update behaviour:** a PWA cannot silently force an update while fully closed or offline. Browsers check and install the new service worker when the installed app next opens or becomes active online. The app then asks before reloading so unfinished form input is not discarded.
+
+
+## Release 2026.11.14.4 — van operations quality pass
+
+- Fixed the Janushan application brand to deep navy, white and blue; the Store settings page no longer offers unrelated colour themes.
+- Improved the daily cash close-out instructions and physical cash amount entry. The operator records one end-of-outing amount after expenses; this does not add individual-sale entry.
+- Expense recording now includes the actual expense date, payment source and clear validation.
+- Periodic physical stock counts have a searchable product list and clearer instructions.
+- Stock movement entries require a whole-number quantity and a reason, keeping receipts, damages, free items, returns and corrections auditable.
+- Refined cash, expense, count, report and owner layouts for mobile screens.
+- Incremented the PWA cache to v16.
+
+### Release verification
+
+Run `npm test` before deployment. Verify owner, operator and viewer permissions with separate accounts. Test one cash close-out, a cash-paid expense, a bank-paid expense, a stock movement and two reviewed physical stock counts in a non-production/test business before relying on reconciliation. Confirm offline launch and pending-sale sync on a real installed device. Never test destructive actions against production records.
