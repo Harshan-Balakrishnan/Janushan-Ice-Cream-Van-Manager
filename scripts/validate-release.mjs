@@ -51,7 +51,12 @@ const checks = [
   ['safe auth error mapping', app.includes('function authErrorMessage')],
   ['email validation accepts Gmail and rejects malformed input', emailValidationWorks],
   ['GitHub Pages redirect (no localhost)', !app.includes('localhost:3000')],
-  ['service worker cache v11', sw.includes("janushan-pwa-v10")],
+  ['service worker cache v11', sw.includes("janushan-pwa-v11")],
+  ['separate Reports workspace with selectable reviewed count pairs', app.includes('function reportsPage(v)') && app.includes('janReportOpening') && app.includes('janReportClosing')],
+  ['stock count is a dedicated workflow with duplicate-day protection', app.includes('CountAlreadySubmitted') && app.includes('todayCount')],
+  ['daily cash close-out validates a blank amount', app.includes("raw.trim()===''") && app.includes('save_daily_cash_entry')],
+  ['expense workspace supports date ranges and CSV export', app.includes('janExpenseRange') && app.includes('export-expenses')],
+  ['stock search filters rows without rerendering the input', app.includes('data-stock-row') && app.includes('applyStockFilters')],
   ['PWA manifest start URL', manifest.start_url === './'],
   ['PWA manifest scope', manifest.scope === './'],
 ];
