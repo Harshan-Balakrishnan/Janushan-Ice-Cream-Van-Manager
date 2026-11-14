@@ -25,6 +25,9 @@ const emailValidationWorks =
   !emailPattern.test('name@');
 
 const checks = [
+  ['profit estimate excludes products without cost snapshots', app.includes('knownGrossProfit')],
+  ['dashboard Today filter keeps zero-day range', app.includes('window.janDashboardRange??7')],
+  ['cart item removal control', app.includes('data-cart-remove')],
   ['dashboard date-range analytics', app.includes('periodSales') && app.includes('data-range')],
   ['transparent estimated profit cost coverage', app.includes('unit_cost_snapshot') && app.includes('ProfitNote')],
   ['printable itemised receipts', app.includes('function printReceipt') && app.includes('data-print')],
