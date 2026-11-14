@@ -153,3 +153,14 @@ body{background:radial-gradient(ellipse at 12% 0%,#eaf2ff 0,transparent 34%),#f4
 .cart-line{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
 .cart-line small{display:block;color:#718096;margin-top:3px}
 .cart-line>button{min-width:42px;min-height:42px;font-size:1.2rem;color:#a13d48}
+
+/* Periodic stock + daily net cash workflow */
+.cash-entry-hero{display:flex;align-items:center;gap:16px;padding:18px;border-radius:18px;background:linear-gradient(135deg,#eaf2ff,#f7fbff);margin:12px 0 16px}
+.cash-entry-icon{width:58px;height:58px;display:grid;place-items:center;border-radius:18px;background:#fff;box-shadow:0 8px 22px #1559d61c;font-size:1.8rem;flex:0 0 auto}
+.cash-entry-hero h2{margin:0 0 5px;font-size:1.08rem}.cash-entry-hero p{margin:0;color:#64748b;line-height:1.5;font-size:.88rem}
+.cash-entry-panel{max-width:720px;padding:20px}.cash-entry-panel .field input{min-height:56px;font-size:1.15rem;font-weight:750}.cash-save{width:100%;min-height:54px;margin-top:12px}
+.reconciliation-panel{padding:20px;background:linear-gradient(145deg,#fff,#f6f9ff)}
+.recon-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.recon-title h2{margin:0 0 5px}.recon-title p{margin:0;color:#64748b}
+.recon-cards{grid-template-columns:repeat(4,minmax(0,1fr));margin:16px 0}.recon-cards .card{margin:0}
+.recon-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.recon-grid>div{min-width:0}.recon-grid h3{font-size:1rem}
+@media(max-width:780px){.recon-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.recon-grid{grid-template-columns:1fr}.cash-entry-panel{padding:15px}}
