@@ -15,8 +15,8 @@ const requiredAssets = [
 const app = fs.readFileSync('app.js', 'utf8');
 const manifest = JSON.parse(fs.readFileSync('manifest.webmanifest', 'utf8'));
 const sw = fs.readFileSync('sw.js', 'utf8');
-const expectedEmailValidation = String.raw\`!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)\`;
-const emailPattern = new RegExp(String.raw\`^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$\`);
+const expectedEmailValidation = '!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)';
+const emailPattern = new RegExp('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$');
 const emailValidationWorks =
   app.split(expectedEmailValidation).length - 1 === 2 &&
   emailPattern.test('janushan.test@gmail.com') &&
