@@ -295,11 +295,10 @@ function login(mode='login',notice=''){
  }
 }
 const navGroups=[
- {label:'Overview',items:['Dashboard','Owner centre']},
- {label:'Daily operations',items:['Daily cash','Expenses']},
- {label:'Inventory',items:['Products','Stock','Weekly count']},
- {label:'ReportsNav',items:['Reports','Historical sales']},
- {label:'Management',items:['Team','Manage Store']}
+ {label:'Van operations',items:['Dashboard','Daily cash','Expenses']},
+ {label:'Van stock',items:['Stock','Products','Weekly count']},
+ {label:'Business insights',items:['Reports','Owner centre']},
+ {label:'Administration',items:['Team','Manage Store']}
 ];
 const nav=navGroups.flatMap(group=>group.items);
 const mobilePrimaryNav=['Dashboard','Daily cash','Stock','Expenses'];
@@ -367,17 +366,14 @@ async function load(){
 
 
 function layout(){
- const desktopNav=navGroups.map(group=>'<section class="nav-group"><div class="nav-group-title">'+tr(group.label)+'</div>'+group.items.map(x=>'<button type="button" data-page="'+x+'" class="nav-item '+(x===page?'active':'')+'"><span class="nav-item-icon" aria-hidden="true">'+(navIcons[x]||'·')+'</span><span>'+tr(x)+'</span></button>').join('')+'</section>').join('');
- const moreNav=nav.filter(x=>!mobilePrimaryNav.includes(x));
- $('#app').innerHTML='<div class="shell"><aside class="side"><div class="brand-lockup"><img class="side-logo" src="'+esc(mediaUrl(storeSettings.logo_path)||'./assets/logo.webp')+'" alt="Janushan Ice Cream" onerror="this.onerror=null;this.src=\'./icon.svg\'"><div class="brand-copy"><strong>JANUSHAN</strong><span>ICE CREAM MANAGEMENT</span></div></div><div class="sidebar-business">'+esc(storeSettings.display_name||biz.name)+'</div><nav class="nav desktop-nav" aria-label="Main navigation">'+desktopNav+'</nav><div class="side-footer"><span class="side-footer-mark">●</span><span>'+tr('BusinessWorkspace')+'</span></div><nav class="mobile-nav" aria-label="Main navigation">'+mobilePrimaryNav.map(x=>'<button type="button" data-page="'+x+'" class="'+(x===page?'active':'')+'"><span class="nav-icon" aria-hidden="true">'+navIcons[x]+'</span><span class="nav-label">'+tr(x)+'</span></button>').join('')+'<button type="button" id="more-nav" class="'+(mobilePrimaryNav.includes(page)?'':'active')+'" aria-controls="more-menu" aria-expanded="false"><span class="nav-icon" aria-hidden="true">•••</span><span class="nav-label">'+tr('More')+'</span></button></nav><div class="more-scrim" id="more-scrim" hidden></div><div class="more-menu" id="more-menu" hidden role="menu">'+moreNav.map(x=>'<button type="button" role="menuitem" data-page="'+x+'">'+tr(x)+'</button>').join('')+'<div class="more-menu-tools">'+languageButtons()+'<button type="button" class="more-logout" id="mobile-logout">'+tr('Signout')+'</button></div></div></aside><main class="main"><header class="top"><div class="top-context"><span class="top-overline">'+tr('BusinessOverview')+'</span><div class="top-title-row"><h1 id="title">'+tr(page)+'</h1><span class="top-separator">/</span><span class="top-business">'+esc(storeSettings.display_name||biz.name)+'</span></div></div><div class="top-actions"><span id="net-state" class="network-pill"></span>'+languageButtons()+'<button class="pill logout-button" id="logout">'+tr('Signout')+'</button></div></header><div class="content" id="view"></div></main></div>';
+ const visibleGroups=navGroups.map(g=>({...g,items:g.items.filter(x=>x!=='Owner centre'||role==='owner')})).filter(g=>g.items.length);
+ const desktopNav=visibleGroups.map(group=>'<section class="nav-group"><div class="nav-group-title">'+tr(group.label)+'</div>'+group.items.map(x=>'<button type="button" data-page="'+x+'" class="nav-item '+(x===page?'active':'')+'"><span class="nav-item-icon" aria-hidden="true">'+(navIcons[x]||'·')+'</span><span>'+tr(x)+'</span></button>').join('')+'</section>').join('');
+ const visibleNav=visibleGroups.flatMap(g=>g.items),moreNav=visibleNav.filter(x=>!mobilePrimaryNav.includes(x));
+ $('#app').innerHTML='<div class="shell"><aside class="side"><div class="brand-lockup"><img class="side-logo" src="'+esc(mediaUrl(storeSettings.logo_path)||'./assets/logo.webp')+'" alt="Janushan Ice Cream" onerror="this.onerror=null;this.src=\'./icon.svg\'"><div class="brand-copy"><strong>JANUSHAN</strong><span>VAN BUSINESS MANAGER</span></div></div><div class="sidebar-business"><span class="side-business-dot"></span><span>'+esc(storeSettings.display_name||biz.name)+'</span></div><nav class="nav desktop-nav" aria-label="Main navigation">'+desktopNav+'</nav><div class="side-footer"><span class="side-footer-mark">●</span><span>'+tr('VanWorkspace')+'</span></div><nav class="mobile-nav" aria-label="Main navigation">'+mobilePrimaryNav.map(x=>'<button type="button" data-page="'+x+'" class="'+(x===page?'active':'')+'"><span class="nav-icon" aria-hidden="true">'+navIcons[x]+'</span><span class="nav-label">'+tr(x)+'</span></button>').join('')+'<button type="button" id="more-nav" class="'+(mobilePrimaryNav.includes(page)?'':'active')+'" aria-controls="more-menu" aria-expanded="false"><span class="nav-icon" aria-hidden="true">•••</span><span class="nav-label">'+tr('More')+'</span></button></nav><div class="more-scrim" id="more-scrim" hidden></div><div class="more-menu" id="more-menu" hidden role="menu">'+moreNav.map(x=>'<button type="button" role="menuitem" data-page="'+x+'">'+tr(x)+'</button>').join('')+'<div class="more-menu-tools">'+languageButtons()+'<button type="button" class="more-logout" id="mobile-logout">'+tr('Signout')+'</button></div></div></aside><main class="main"><header class="top"><div class="top-context"><span class="top-overline">'+tr('VanWorkspace')+'</span><div class="top-title-row"><h1 id="title">'+tr(page)+'</h1><span class="top-separator">/</span><span class="top-business">'+esc(storeSettings.display_name||biz.name)+'</span></div></div><div class="top-actions"><span id="net-state" class="network-pill"></span>'+languageButtons()+'<button class="pill logout-button" id="logout">'+tr('Signout')+'</button></div></header><div class="content" id="view"></div></main></div>';
  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{page=b.dataset.page;closeMobileMore();render()});
  bindLanguages();updateNetworkState();
  $('#more-nav').onclick=toggleMobileMore;$('#more-scrim').onclick=closeMobileMore;
- const handleLogout=async()=>{
-  if(pendingSales.length&&!confirm(tr('PendingLogoutWarning')))return;
-  const uid=user?.id;await db.auth.signOut();localStorage.removeItem('janushan.lastUser');
-  if(uid)localStorage.removeItem(snapshotKey(uid));login();
- };
+ const handleLogout=async()=>{if(pendingSales.length&&!confirm(tr('PendingLogoutWarning')))return;const uid=user?.id;await db.auth.signOut();localStorage.removeItem('janushan.lastUser');if(uid)localStorage.removeItem(snapshotKey(uid));login()};
  $('#logout').onclick=handleLogout;$('#mobile-logout').onclick=handleLogout;
  render();applyAccessibilitySettings();
 }
