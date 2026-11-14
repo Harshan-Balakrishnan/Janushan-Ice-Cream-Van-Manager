@@ -286,7 +286,7 @@ function login(mode='login',notice=''){
  }
 }
 const navGroups=[
- {label:'Overview',items:['Dashboard']},
+ {label:'Overview',items:['Dashboard','Owner centre']},
  {label:'Daily operations',items:['Daily cash','Expenses']},
  {label:'Inventory',items:['Products','Stock','Weekly count']},
  {label:'ReportsNav',items:['Reports','Historical sales']},
@@ -294,7 +294,7 @@ const navGroups=[
 ];
 const nav=navGroups.flatMap(group=>group.items);
 const mobilePrimaryNav=['Dashboard','Daily cash','Stock','Expenses'];
-const navIcons={Dashboard:'⌂','Daily cash':'＄',Stock:'▦',Expenses:'↗',Products:'◈','Weekly count':'▤',Reports:'▥','Historical sales':'◷',Team:'♙','Manage Store':'⚙'};
+const navIcons={Dashboard:'⌂','Owner centre':'◫','Daily cash':'＄',Stock:'▦',Expenses:'↗',Products:'◈','Weekly count':'▤',Reports:'▥','Historical sales':'◷',Team:'♙','Manage Store':'⚙'};
 function closeMobileMore(){const menu=$('#more-menu'),scrim=$('#more-scrim'),button=$('#more-nav');if(menu)menu.hidden=true;if(scrim)scrim.hidden=true;if(button)button.setAttribute('aria-expanded','false')}
 function toggleMobileMore(){const menu=$('#more-menu'),scrim=$('#more-scrim'),button=$('#more-nav');if(!menu||!scrim||!button)return;const open=menu.hidden;menu.hidden=!open;scrim.hidden=!open;button.setAttribute('aria-expanded',String(open))}
 
@@ -492,6 +492,7 @@ else if(page==='Daily cash')dailyCashPage(v);
  else if(page==='Cash book')dailyCashPage(v);
  else if(page==='Weekly count')countPage(v);
  else if(page==='Reports')reportsPage(v);
+ else if(page==='Owner centre')ownerCentrePage(v);
  else if(page==='Team')teamPage(v);
  else if(page==='Manage Store')storePage(v);
 }
@@ -672,6 +673,93 @@ function reportsPage(v){
  $('#report-closing').onchange=()=>{window.janReportClosing=$('#report-closing').value;render()};
  $('#report-count-link').onclick=()=>{page='Weekly count';render()};
  if(report&&valid)$('#export-recon').onclick=()=>downloadCsv('janushan-reconciliation-'+report.start+'-'+report.end+'.csv',[['Product','Estimated units sold','Selling price','Expected sales','Unit cost','COGS'],...report.lines.map(x=>[x.name,x.sold,x.price,x.revenue,x.cost,x.cogs]),[],['Opening count',report.start],['Closing count',report.end],['Expected sales',report.expectedSales],['Gross cash collections',report.grossCash],['Cash variance',report.cashVariance],['COGS',report.cogs],['Expenses',report.totalExpenses],['Estimated net profit',report.netProfit]]);
+}
+
+
+async function ownerCentrePage(v){
+ if(role!=='owner'){
+  v.innerHTML='<section class="panel report-empty"><h2>Owner access required</h2><p>This control centre is available to the business owner only.</p></section>';
+  return;
+ }
+ const days=Number(window.janOwnerPeriod||30),start=dateOffset(days-1),end=today();
+ const inRange=(date)=>date>=start&&date<=end;
+ const cashRows=dailyCashEntries.filter(x=>inRange(x.entry_date));
+ const expenseRows=expenses.filter(x=>inRange(colomboDate(x.spent_at)));
+ const cashExpenses=expenseRows.filter(x=>x.paid_from==='cash').reduce((a,x)=>a+Number(x.amount||0),0);
+ const bankExpenses=expenseRows.filter(x=>x.paid_from!=='cash').reduce((a,x)=>a+Number(x.amount||0),0);
+ const netCash=cashRows.reduce((a,x)=>a+Number(x.net_cash_after_expenses||0),0);
+ const grossCash=netCash+cashExpenses;
+ const totalExpenses=expenseRows.reduce((a,x)=>a+Number(x.amount||0),0);
+ const stockCostValue=stock.reduce((a,x)=>a+Number(x.on_hand||0)*Number(x.unit_cost||0),0);
+ const reviewed=counts.filter(x=>x.status==='reviewed').sort((a,b)=>a.count_date.localeCompare(b.count_date));
+ const closing=reviewed.filter(x=>x.count_date<=end).slice(-1)[0];
+ const opening=closing?reviewed.filter(x=>x.count_date<closing.count_date&&x.count_date<=start).slice(-1)[0]:null;
+ const recon=opening&&closing?periodReconciliation(opening,closing):null;
+ const daily=Array.from({length:days},(_,i)=>{
+  const date=dateOffset(days-1-i),entry=cashRows.find(x=>x.entry_date===date);
+  const exp=expenseRows.filter(x=>x.paid_from==='cash'&&colomboDate(x.spent_at)===date).reduce((a,x)=>a+Number(x.amount||0),0);
+  return {date,value:entry?Number(entry.net_cash_after_expenses||0)+exp:0,recorded:!!entry};
+ });
+ const maxDaily=Math.max(1,...daily.map(x=>x.value));
+ const bars=daily.map(x=>'<div class="owner-bar-col" title="'+x.date+' · '+(x.recorded?money(x.value):'No cash record')+'"><div class="owner-bar-track"><span class="owner-bar '+(x.recorded?'':'is-empty')+'" style="height:'+Math.max(x.recorded?3:0,x.value/maxDaily*100)+'%"></span></div><small>'+x.date.slice(8)+'</small></div>').join('');
+ const categories={};expenseRows.forEach(x=>{const k=x.category||'Other';categories[k]=(categories[k]||0)+Number(x.amount||0)});
+ const categoryRows=Object.entries(categories).sort((a,b)=>b[1]-a[1]).map(([k,n])=>'<div class="owner-category-row"><span>'+esc(k)+'</span><div class="owner-category-track"><i style="width:'+Math.max(2,n/Math.max(1,totalExpenses)*100)+'%"></i></div><strong>'+money(n)+'</strong></div>').join('');
+ const membersResult=await db.rpc('list_business_members',{p_business_id:biz.id});
+ const members=membersResult.error?[]:(membersResult.data||[]);
+ const actorFields=['created_by','created_by_user_id','user_id','submitted_by','reviewed_by','recorded_by','performed_by','actor_id','staff_id'];
+ const records=[...cashRows.map(x=>({kind:'cash close-outs',row:x,amount:Number(x.net_cash_after_expenses||0)})),...expenseRows.map(x=>({kind:'expenses logged',row:x,amount:Number(x.amount||0)})),...counts.filter(x=>inRange(x.count_date)).map(x=>({kind:'stock counts',row:x,amount:0})),...stockMovements.filter(x=>inRange(colomboDate(x.occurred_at))).map(x=>({kind:'stock movements',row:x,amount:0}))];
+ const staffStats=new Map(members.map(m=>[m.user_id,{email:m.email||'Team member',role:m.role,cash:0,expenses:0,counts:0,movements:0,events:0,amount:0}]));
+ let attributable=0;
+ for(const item of records){
+  const key=actorFields.map(f=>item.row?.[f]).find(x=>x&&staffStats.has(x));
+  if(!key)continue;
+  const stat=staffStats.get(key);attributable++;stat.events++;
+  if(item.kind==='cash close-outs'){stat.cash++;stat.amount+=item.amount}
+  else if(item.kind==='expenses logged'){stat.expenses++;stat.amount+=item.amount}
+  else if(item.kind==='stock counts')stat.counts++;
+  else if(item.kind==='stock movements')stat.movements++;
+ }
+ const staffRows=attributable?Array.from(staffStats.values()).map(s=>'<tr><td><strong>'+esc(s.email)+'</strong><small class="table-subtext">'+esc(s.role)+'</small></td><td>'+s.cash+'</td><td>'+s.expenses+'</td><td>'+s.counts+'</td><td>'+s.movements+'</td><td>'+s.events+'</td></tr>').join(''):'';
+ const stockVariance=closing?(closing.stock_count_lines||[]).reduce((a,x)=>a+Math.abs(Number(x.variance||0)),0):null;
+ const cashVariance=recon?recon.cashVariance:null;
+ const trendRows=daily.filter(x=>x.recorded).map(x=>[x.date,money(x.value)]);
+ const reportRows=[
+  ['Metric','Value'],['Period start',start],['Period end',end],['Cash entries',cashRows.length],
+  ['Net cash after expenses',netCash],['Cash-paid expenses added back',cashExpenses],['Estimated gross cash collected',grossCash],
+  ['Total expenses',totalExpenses],['Cash expenses',cashExpenses],['Bank expenses',bankExpenses],
+  ['Current stock cost value',stockCostValue],['Stock count absolute variance (latest reviewed)',stockVariance??'Not available'],
+  ['Expected sales from reviewed stock-count pair',recon?.expectedSales??'Not available'],
+  ['Cash discrepancy from reviewed stock-count pair',cashVariance??'Not available'],
+  ['Estimated COGS from reviewed stock-count pair',recon?.cogs??'Not available'],
+  ['Estimated net profit from reviewed stock-count pair',recon?.netProfit??'Not available']
+ ];
+ v.innerHTML='<div class="page-heading owner-heading"><div><span class="eyebrow">OWNER CONTROL CENTRE</span><h1>Business intelligence</h1><p>Operational and financial visibility from your existing cash close-outs, stock counts, movements and expenses.</p></div><div class="heading-actions"><label class="owner-period-label">Reporting window<select id="owner-period"><option value="7" '+(days===7?'selected':'')+'>Last 7 days</option><option value="30" '+(days===30?'selected':'')+'>Last 30 days</option><option value="90" '+(days===90?'selected':'')+'>Last 90 days</option></select></label><button class="btn btn-secondary" id="owner-refresh">↻ Refresh</button></div></div>'+
+ '<section class="owner-kpis">'+
+ '<article class="owner-kpi"><span>Estimated gross cash collected</span><strong>'+money(grossCash)+'</strong><small>'+cashRows.length+' recorded outing days · cash expenses added back</small></article>'+
+ '<article class="owner-kpi"><span>Cash remaining after expenses</span><strong>'+money(netCash)+'</strong><small>Physical cash close-out entries only</small></article>'+
+ '<article class="owner-kpi"><span>Total recorded expenses</span><strong>'+money(totalExpenses)+'</strong><small>Cash '+money(cashExpenses)+' · Bank '+money(bankExpenses)+'</small></article>'+
+ '<article class="owner-kpi"><span>Current stock cost value</span><strong>'+money(stockCostValue)+'</strong><small>On-hand quantity × recorded unit cost</small></article>'+
+ '</section>'+
+ '<div class="owner-grid">'+
+ '<section class="panel owner-panel owner-trend"><div class="section-heading"><div><span class="eyebrow">CASH COLLECTION</span><h2>Cash collection trend</h2><p>Daily gross cash estimate = physical cash remaining + cash-paid expenses</p></div></div><div class="owner-chart">'+bars+'</div><div class="owner-chart-legend"><span>Recorded outing day</span><span>No cash close-out entered</span></div></section>'+
+ '<section class="panel owner-panel"><div class="section-heading"><div><span class="eyebrow">COST CONTROL</span><h2>Expense mix</h2><p>'+expenseRows.length+' records in this period</p></div></div>'+(categoryRows||'<p class="muted">No expense records in this period.</p>')+'<div class="owner-total-row"><span>Total expenses</span><strong>'+money(totalExpenses)+'</strong></div></section>'+
+ '</div>'+
+ '<section class="owner-grid owner-grid-equal">'+
+ '<section class="panel owner-panel"><div class="section-heading"><div><span class="eyebrow">STOCK CONTROL</span><h2>Inventory health</h2><p>Live stock position from existing stock balances</p></div></div><div class="owner-stat-list"><div><span>Active products</span><strong>'+products.filter(x=>x.active).length+'</strong></div><div><span>Low-stock products</span><strong>'+stock.filter(x=>x.active&&Number(x.on_hand||0)<=Number(x.low_stock_threshold||0)).length+'</strong></div><div><span>Out of stock</span><strong>'+stock.filter(x=>x.active&&Number(x.on_hand||0)<=0).length+'</strong></div><div><span>Latest reviewed count</span><strong>'+(closing?closing.count_date:'Not available')+'</strong></div><div><span>Absolute count variance</span><strong>'+(stockVariance===null?'—':stockVariance.toLocaleString('en-LK'))+'</strong></div></div></section>'+
+ '<section class="panel owner-panel"><div class="section-heading"><div><span class="eyebrow">CASH VS STOCK</span><h2>Discrepancy analysis</h2><p>Requires two reviewed physical stock counts</p></div></div>'+(recon?'<div class="owner-recon-highlight '+(cashVariance>0?'is-warning':cashVariance<0?'is-info':'is-good')+'"><span>Estimated cash discrepancy</span><strong>'+money(Math.abs(cashVariance))+'</strong><small>'+(cashVariance>0?'Expected stock-based sales exceed estimated cash collected':cashVariance<0?'Estimated cash collected exceeds stock-based expected sales':'No estimated difference')+'</small></div><div class="owner-stat-list"><div><span>Expected sales from stock usage</span><strong>'+money(recon.expectedSales)+'</strong></div><div><span>Estimated gross cash collected</span><strong>'+money(recon.grossCash)+'</strong></div><div><span>Estimated units used</span><strong>'+recon.units.toLocaleString('en-LK')+'</strong></div><div><span>Estimated cost of goods</span><strong>'+money(recon.cogs)+'</strong></div><div><span>Estimated net profit</span><strong>'+money(recon.netProfit)+'</strong></div></div><p class="owner-footnote">Count comparison: '+recon.start+' → '+recon.end+'. This is an operational estimate, not an audited accounting result.</p>':'<div class="owner-empty"><strong>More stock-count data needed</strong><p>Complete and review two physical stock counts to unlock stock-versus-cash discrepancy analysis.</p><button class="btn btn-secondary" id="owner-open-count">Open stock count</button></div>')+'</section>'+
+ '</section>'+
+ '<section class="panel owner-panel owner-staff"><div class="section-heading"><div><span class="eyebrow">TEAM OPERATIONS</span><h2>Staff activity and performance</h2><p>Operational workload indicators only. No individual sales or staff sales targets are used.</p></div><span class="status-pill status-neutral">'+members.length+' team members</span></div>'+
+ (attributable?'<div class="scroll"><table><thead><tr><th>Team member</th><th>Cash close-outs</th><th>Expenses logged</th><th>Stock counts</th><th>Stock movements</th><th>Total actions</th></tr></thead><tbody>'+staffRows+'</tbody></table></div><p class="owner-footnote">Attribution is based only on member IDs present in existing records. Unattributed records are excluded from individual activity totals.</p>':'<div class="owner-empty"><strong>Staff-level attribution is not available in the current records.</strong><p>The existing records do not expose a recognised staff member ID for these activities. This dashboard will not guess who performed an action or assign performance scores. Team-level activity remains available until the existing database audit fields can be verified.</p></div>')+
+ '</section>'+
+ '<section class="panel owner-panel owner-finance"><div class="section-heading"><div><span class="eyebrow">FINANCIAL REPORTING</span><h2>Owner financial snapshot</h2><p>'+start+' → '+end+' · based on recorded cash close-outs and expenses</p></div><button class="btn" id="owner-export">Export financial report</button></div><div class="owner-finance-grid"><div><span>Net cash remaining</span><strong>'+money(netCash)+'</strong></div><div><span>Cash expenses</span><strong>'+money(cashExpenses)+'</strong></div><div><span>Bank expenses</span><strong>'+money(bankExpenses)+'</strong></div><div><span>Gross cash estimate</span><strong>'+money(grossCash)+'</strong></div></div><div class="owner-total-row"><span>Cash close-out records in selected period</span><strong>'+cashRows.length+'</strong></div><p class="owner-footnote">Gross cash is reconstructed from the physical cash remaining after expenses plus expenses paid from cash. Bank-paid expenses are not added to cash collections.</p></section>'+
+ '<section class="owner-actions"><button class="btn btn-secondary" id="owner-open-reports">Open detailed reconciliation reports</button><button class="btn btn-secondary" id="owner-open-team">Manage team</button><button class="btn btn-secondary" id="owner-open-expenses">Review expenses</button></section>';
+ $('#owner-period').onchange=()=>{window.janOwnerPeriod=Number($('#owner-period').value);render()};
+ $('#owner-refresh').onclick=async()=>{try{await load();render();toast('Business intelligence refreshed.')}catch(e){toast(e.message)}};
+ $('#owner-export').onclick=()=>downloadCsv('janushan-owner-financial-report-'+start+'-'+end+'.csv',reportRows);
+ $('#owner-open-count')?.addEventListener('click',()=>{page='Weekly count';render()});
+ $('#owner-open-reports').onclick=()=>{page='Reports';render()};
+ $('#owner-open-team').onclick=()=>{page='Team';render()};
+ $('#owner-open-expenses').onclick=()=>{page='Expenses';render()};
 }
 
 function countPage(v){
