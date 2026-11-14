@@ -51,7 +51,7 @@ const checks = [
   ['safe auth error mapping', app.includes('function authErrorMessage')],
   ['email validation accepts Gmail and rejects malformed input', emailValidationWorks],
   ['GitHub Pages redirect (no localhost)', !app.includes('localhost:3000')],
-  ['service worker cache v11', sw.includes("janushan-pwa-v11")],
+  ['service worker cache v12 with user-approved update activation', sw.includes('janushan-pwa-v12') && sw.includes('cache:') && sw.includes('SKIP_WAITING')],
   ['separate Reports workspace with selectable reviewed count pairs', app.includes('function reportsPage(v)') && app.includes('janReportOpening') && app.includes('janReportClosing')],
   ['stock count is a dedicated workflow with duplicate-day protection', app.includes('CountAlreadySubmitted') && app.includes('todayCount')],
   ['daily cash close-out validates a blank amount', app.includes("raw.trim()===''") && app.includes('save_daily_cash_entry')],
@@ -59,6 +59,9 @@ const checks = [
   ['stock search filters rows without rerendering the input', app.includes('data-stock-row') && app.includes('applyStockFilters')],
   ['PWA manifest start URL', manifest.start_url === './'],
   ['PWA manifest scope', manifest.scope === './'],
+  ['PWA update prompt protects unfinished work', app.includes('New Janushan update ready') && app.includes('Save or finish any open form before refreshing')],
+  ['PWA waits for user approval before activating update', sw.includes('SKIP_WAITING') && !sw.includes('self.skipWaiting()')],
+  ['PWA has standard 192 and 512 PNG app icons', manifest.icons.some(x => x.sizes === '192x192') && manifest.icons.some(x => x.sizes === '512x512')],
 ];
 let failed = false;
 for (const [label, passed] of checks) {
