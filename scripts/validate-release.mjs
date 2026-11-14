@@ -25,6 +25,12 @@ const emailValidationWorks =
   !emailPattern.test('name@');
 
 const checks = [
+  ['owner intelligence centre is owner-only and uses existing business records', app.includes("async function ownerCentrePage(v)") && app.includes("role!=='owner'") && app.includes("else if(page==='Owner centre')ownerCentrePage(v)")],
+  ['owner intelligence preserves no-individual-sales operating workflow', app.includes('No individual sales or staff sales targets are used.') && app.includes('net_cash_after_expenses') && app.includes('periodReconciliation')],
+  ['owner financial report exports cash, expenses and stock reconciliation', app.includes('janushan-owner-financial-report-') && app.includes('Estimated gross cash collected')],
+  ['staff performance avoids invented attribution', app.includes('Attribution is based only on member IDs present in existing records.') && app.includes('Staff-level attribution is not available')],
+  ['owner centre responsive styles', fs.readFileSync('styles.css', 'utf8').includes('.owner-kpis') && fs.readFileSync('styles.css', 'utf8').includes('.owner-grid')],
+
   ['daily net cash entries use secure database RPC', app.includes('save_daily_cash_entry') && app.includes('daily_cash_entries')],
   ['daily cash amount is after expenses', app.includes('net_cash_after_expenses') && app.includes('CashRemaining')],
   ['daily cash added back to cash expenses for gross collection estimate', app.includes('grossCash=cashNet+cashExpenses')],
