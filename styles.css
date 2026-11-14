@@ -121,3 +121,30 @@ button:disabled{opacity:.58;cursor:wait;transform:none!important}
  .dashboard-logo,.brand-logo,.side-logo{animation:none!important}
  .product-card,.product-photo-stage img,.quick-action{transition:none!important}
 }
+
+/* Release 2026.11.14.4 — premium business intelligence and operations */
+body{background:radial-gradient(ellipse at 12% 0%,#eaf2ff 0,transparent 34%),#f4f7fb;color:#17243a}
+.content{max-width:1480px}.panel,.card{box-shadow:0 12px 34px rgba(16,43,80,.07)}
+.analytics-panel{padding:22px;background:linear-gradient(145deg,#fff,#f5f8ff);border:1px solid #dce7f8}
+.analytics-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.analytics-heading h2{font-size:1.2rem;margin:0 0 5px}.analytics-heading p{margin:0;color:#718096;font-size:.88rem}
+.range-switch{display:flex;gap:5px;padding:4px;background:#eaf0fa;border-radius:14px}
+.range-switch button{border:0;border-radius:10px;background:transparent;color:#53647a;padding:8px 12px;min-height:40px;font-size:.84rem;font-weight:800}
+.range-switch button.selected{background:#fff;color:#1559d6;box-shadow:0 3px 12px #102b5015}
+.analytics-cards{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:18px}.analytics-cards .card{margin:0;background:#fff}
+.card-detail{display:block;color:#8190a3;font-size:.72rem;line-height:1.35;margin-top:8px}
+.chart-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:22px 0 8px}.chart-heading h3{font-size:1rem;margin:0}
+.sales-chart{display:block;width:100%;height:auto;max-height:210px;overflow:visible}
+.analytics-footnote{font-size:.76rem;line-height:1.45;color:#8491a3;margin:14px 0 0}
+.insight-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}.insight-grid>.panel{min-width:0}
+.stock-health{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 16px}
+.stock-health>div{background:#f3f6fb;border-radius:13px;padding:12px;min-width:0;color:#718096;font-size:.76rem}
+.stock-health strong{display:block;font-size:1.35rem;color:#17243a}
+.sales-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 16px}
+.sales-toolbar input[type=search]{flex:1;min-width:180px;min-height:50px;border:1px solid #d8e1ed;border-radius:14px;padding:12px 14px;background:#fff;font:inherit}
+.sales-toolbar select{min-height:50px;border:1px solid #d8e1ed;border-radius:14px;padding:10px 14px;background:#fff;font:inherit}
+.sales-summary{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:14px}.sales-summary .card{margin:0}
+.filter-check{display:flex;align-items:center;gap:8px;font-weight:750;padding:10px 14px;background:#fff;border:1px solid var(--line);border-radius:13px;min-height:48px}
+.filter-check input{width:20px;height:20px;accent-color:var(--blue)}
+@media(max-width:850px){.analytics-panel{padding:16px}.analytics-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.insight-grid{grid-template-columns:1fr}.sales-toolbar{align-items:stretch}.sales-toolbar input[type=search]{flex-basis:100%}.sales-toolbar select,.sales-toolbar>.btn{flex:1}.sales-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.range-switch{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.range-switch button{padding:7px 5px;font-size:.76rem}}
+@media(max-width:390px){.analytics-cards,.sales-summary{grid-template-columns:1fr 1fr}.analytics-panel .card{padding:12px}}
