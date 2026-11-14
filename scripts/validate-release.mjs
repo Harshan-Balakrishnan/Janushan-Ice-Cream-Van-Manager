@@ -25,6 +25,18 @@ const emailValidationWorks =
   !emailPattern.test('name@');
 
 const checks = [
+  ['owner review signals use recorded cash and expense baselines', app.includes('Unusually high cash close-out') && app.includes('Expense spike') && app.includes('median')],
+  ['cash forecast is based on recorded business outings', app.includes('Next 7 business outings') && app.includes('Next 30 business outings') && app.includes('avgPerOuting')],
+  ['owner report can be printed or saved as PDF', app.includes('owner-print') && app.includes('window.print()')],
+  ['staff activity uses authenticated member audit events', app.includes('business_activity_events') && app.includes('log_business_activity') && app.includes('actor_user_id')],
+  ['activity migration is additive and owner-read restricted', fs.existsSync('supabase/migrations/20261114_business_activity_log.sql') && fs.readFileSync('supabase/migrations/20261114_business_activity_log.sql','utf8').includes('Owners can read business activity events')],
+
+  ['owner intelligence centre is owner-only and uses existing business records', app.includes("async function ownerCentrePage(v)") && app.includes("role!=='owner'") && app.includes("else if(page==='Owner centre')ownerCentrePage(v)")],
+  ['owner intelligence preserves no-individual-sales operating workflow', app.includes('No individual sales or staff sales targets are used.') && app.includes('net_cash_after_expenses') && app.includes('periodReconciliation')],
+  ['owner financial report exports cash, expenses and stock reconciliation', app.includes('janushan-owner-financial-report-') && app.includes('Estimated gross cash collected')],
+  ['staff activity is tied to authenticated audit events, without sales scoring', app.includes('event.actor_user_id') && app.includes('No attributable staff actions in this period.') && app.includes('Counts include only actions recorded after activity logging is enabled.')],
+  ['owner centre responsive styles', fs.readFileSync('styles.css', 'utf8').includes('.owner-kpis') && fs.readFileSync('styles.css', 'utf8').includes('.owner-grid')],
+
   ['daily net cash entries use secure database RPC', app.includes('save_daily_cash_entry') && app.includes('daily_cash_entries')],
   ['daily cash amount is after expenses', app.includes('net_cash_after_expenses') && app.includes('CashRemaining')],
   ['daily cash added back to cash expenses for gross collection estimate', app.includes('grossCash=cashNet+cashExpenses')],
@@ -51,7 +63,7 @@ const checks = [
   ['safe auth error mapping', app.includes('function authErrorMessage')],
   ['email validation accepts Gmail and rejects malformed input', emailValidationWorks],
   ['GitHub Pages redirect (no localhost)', !app.includes('localhost:3000')],
-  ['service worker cache v12 with user-approved update activation', sw.includes('janushan-pwa-v12') && sw.includes('cache:') && sw.includes('SKIP_WAITING')],
+  ['service worker cache v13 with user-approved update activation', sw.includes('janushan-pwa-v13') && sw.includes('cache:') && sw.includes('SKIP_WAITING')],
   ['separate Reports workspace with selectable reviewed count pairs', app.includes('function reportsPage(v)') && app.includes('janReportOpening') && app.includes('janReportClosing')],
   ['stock count is a dedicated workflow with duplicate-day protection', app.includes('CountAlreadySubmitted') && app.includes('todayCount')],
   ['daily cash close-out validates a blank amount', app.includes("raw.trim()===''") && app.includes('save_daily_cash_entry')],
