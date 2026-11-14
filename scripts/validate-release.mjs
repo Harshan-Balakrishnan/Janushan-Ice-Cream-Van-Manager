@@ -60,7 +60,7 @@ const checks = [
   ['PWA manifest start URL', manifest.start_url === './'],
   ['PWA manifest scope', manifest.scope === './'],
   ['PWA update prompt protects unfinished work', app.includes('New Janushan update ready') && app.includes('Save or finish any open form before refreshing')],
-  ['PWA waits for user approval before activating update', sw.includes('SKIP_WAITING') && !sw.includes('self.skipWaiting()')],
+  ['PWA waits for user approval before activating update', sw.includes("event.data?.type==='SKIP_WAITING'") && !sw.includes('event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.all([...APP_SHELL,...BRAND_ASSETS].map(path=>cache.add(path).catch(()=>null)));self.skipWaiting()')],
   ['PWA has standard 192 and 512 PNG app icons', manifest.icons.some(x => x.sizes === '192x192') && manifest.icons.some(x => x.sizes === '512x512')],
 ];
 let failed = false;
