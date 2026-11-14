@@ -25,6 +25,12 @@ const emailValidationWorks =
   !emailPattern.test('name@');
 
 const checks = [
+  ['van-first navigation groups and owner-only owner centre', app.includes("label:'Van operations'") && app.includes("role==='owner'")],
+  ['van-first home uses daily cash close-out and periodic stock counts', app.includes('VanRunDescription') && app.includes('CountOnlyWhenNeeded') && app.includes('NoIndividualSalesReminder')],
+  ['van-first dashboard keeps individual sale entry out of staff workflow', app.includes('No customer-by-customer sales entry.') && app.includes('NoIndividualSalesReminder')],
+  ['van workspace is responsive and uses dedicated visual system', fs.readFileSync('styles.css','utf8').includes('.van-run-card') && fs.readFileSync('styles.css','utf8').includes('.van-quick-actions')],
+  ['PWA cache v14', fs.readFileSync('sw.js','utf8').includes('janushan-pwa-v14')],
+
   ['owner review signals use recorded cash and expense baselines', app.includes('Unusually high cash close-out') && app.includes('Expense spike') && app.includes('median')],
   ['cash forecast is based on recorded business outings', app.includes('Next 7 business outings') && app.includes('Next 30 business outings') && app.includes('avgPerOuting')],
   ['owner report can be printed or saved as PDF', app.includes('owner-print') && app.includes('window.print()')],
