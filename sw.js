@@ -1,4 +1,4 @@
-const CACHE='janushan-pwa-v15';
+const CACHE='janushan-pwa-v16';
 const PREFIX='janushan-pwa-';
 const APP_SHELL=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon.svg'];
 const BRAND_ASSETS=['./assets/logo.webp','./assets/menu-banner.webp','./assets/waffle-boat.webp','./assets/special-cup.webp','./assets/strawberry-cup.webp','./assets/ice-choc.webp','./assets/cone.webp','./assets/janushan-icon-192.png','./assets/janushan-icon-512.png'];
