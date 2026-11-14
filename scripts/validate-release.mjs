@@ -25,7 +25,7 @@ const emailValidationWorks =
   !emailPattern.test('name@');
 
 const checks = [
-  ['van-first navigation groups and owner-only owner centre', app.includes("label:'Van operations'") && app.includes("role==='owner'")],
+  ['van-first navigation groups and owner-only owner centre', app.includes("label:'Van operations'") && app.includes("g.items.filter(x=>x!=='Owner centre'||role==='owner')")],
   ['van-first home uses daily cash close-out and periodic stock counts', app.includes('VanRunDescription') && app.includes('CountOnlyWhenNeeded') && app.includes('NoIndividualSalesReminder')],
   ['van-first dashboard keeps individual sale entry out of staff workflow', app.includes('No customer-by-customer sales entry.') && app.includes('NoIndividualSalesReminder')],
   ['van workspace is responsive and uses dedicated visual system', fs.readFileSync('styles.css','utf8').includes('.van-run-card') && fs.readFileSync('styles.css','utf8').includes('.van-quick-actions')],
@@ -69,7 +69,7 @@ const checks = [
   ['safe auth error mapping', app.includes('function authErrorMessage')],
   ['email validation accepts Gmail and rejects malformed input', emailValidationWorks],
   ['GitHub Pages redirect (no localhost)', !app.includes('localhost:3000')],
-  ['service worker cache v13 with user-approved update activation', sw.includes('janushan-pwa-v13') && sw.includes('cache:') && sw.includes('SKIP_WAITING')],
+  ['service worker cache v13 with user-approved update activation', sw.includes('janushan-pwa-v14') && sw.includes('cache:') && sw.includes('SKIP_WAITING')],
   ['separate Reports workspace with selectable reviewed count pairs', app.includes('function reportsPage(v)') && app.includes('janReportOpening') && app.includes('janReportClosing')],
   ['stock count is a dedicated workflow with duplicate-day protection', app.includes('CountAlreadySubmitted') && app.includes('todayCount')],
   ['daily cash close-out validates a blank amount', app.includes("raw.trim()===''") && app.includes('save_daily_cash_entry')],
