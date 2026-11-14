@@ -9,7 +9,7 @@ Tamil/Sinhala translation framework, Supabase email redirect handling, password 
 - Commit the supplied original logo, menu banner and product photographs under `assets/`, then update the current fallback image references to those originals. The files are not yet present in this repository branch.
 - Supabase Authentication → URL Configuration:
   - Site URL: https://harshan-balakrishnan.github.io/Janushan-Ice-Cream-Van-Manager/
-  - Redirect URL: https://harshan-balakrishan.github.io/Janushan-Ice-Cream-Van-Manager/**
+  - Redirect URL: https://harshan-balakrishnan.github.io/Janushan-Ice-Cream-Van-Manager/**
 - Test signup confirmation, password recovery, owner/operator/viewer roles, sales, stock movements, weekly count review and cash close with real accounts on the published site.
 - Review remaining Supabase security advisor warnings and enable leaked-password protection.
 
