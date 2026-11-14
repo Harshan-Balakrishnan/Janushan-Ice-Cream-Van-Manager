@@ -148,3 +148,8 @@ body{background:radial-gradient(ellipse at 12% 0%,#eaf2ff 0,transparent 34%),#f4
 .filter-check input{width:20px;height:20px;accent-color:var(--blue)}
 @media(max-width:850px){.analytics-panel{padding:16px}.analytics-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.insight-grid{grid-template-columns:1fr}.sales-toolbar{align-items:stretch}.sales-toolbar input[type=search]{flex-basis:100%}.sales-toolbar select,.sales-toolbar>.btn{flex:1}.sales-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.range-switch{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.range-switch button{padding:7px 5px;font-size:.76rem}}
 @media(max-width:390px){.analytics-cards,.sales-summary{grid-template-columns:1fr 1fr}.analytics-panel .card{padding:12px}}
+
+.cart-lines{display:grid;gap:8px;margin:12px 0}
+.cart-line{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.cart-line small{display:block;color:#718096;margin-top:3px}
+.cart-line>button{min-width:42px;min-height:42px;font-size:1.2rem;color:#a13d48}
