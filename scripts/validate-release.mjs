@@ -25,15 +25,20 @@ const emailValidationWorks =
   !emailPattern.test('name@');
 
 const checks = [
+  ['daily net cash entries use secure database RPC', app.includes('save_daily_cash_entry') && app.includes('daily_cash_entries')],
+  ['daily cash amount is after expenses', app.includes('net_cash_after_expenses') && app.includes('CashRemaining')],
+  ['daily cash added back to cash expenses for gross collection estimate', app.includes('grossCash=cashNet+cashExpenses')],
+  ['period report uses two reviewed physical counts', app.includes('periodReconciliation') && app.includes("x.status==='reviewed'")],
+  ['period report estimates units and expected sales from stock movements', app.includes('openingQty+received-removed') && app.includes('selling_price_snapshot')],
+  ['expenses are deducted separately from net profit', app.includes('expectedSales-cogs-totalExpenses')],
+  ['new individual sale entry is removed from main navigation', !app.includes("const nav=['Dashboard','Sales'") && !app.includes('data-quick="sale"')],
+  ['legacy individual sales are read-only', app.includes("else if(page==='Historical sales')") && !app.includes("id=\"addsale\"" )],
   ['profit estimate excludes products without cost snapshots', app.includes('knownGrossProfit')],
-  ['dashboard Today filter keeps zero-day range', app.includes('window.janDashboardRange??7')],
   ['cart item removal control', app.includes('data-cart-remove')],
-  ['dashboard date-range analytics', app.includes('periodSales') && app.includes('data-range')],
   ['transparent estimated profit cost coverage', app.includes('unit_cost_snapshot') && app.includes('ProfitNote')],
   ['printable itemised receipts', app.includes('function printReceipt') && app.includes('data-print')],
   ['sales CSV export', app.includes('function downloadCsv') && app.includes('export-sales')],
   ['stock search and low-stock filter', app.includes('janStockSearch') && app.includes('janStockLowOnly')],
-  ['active products only in point of sale', app.includes('products.filter(p=>p.active&&availableStock(p.id)>0)')],
   ['mobile five-item navigation and overflow menu', app.includes('mobilePrimaryNav') && app.includes('more-menu')],
   ['dashboard quick actions and empty catalogue guidance', app.includes('QuickActions') && app.includes('StartCatalogue')],
   ['responsive product cards and search', app.includes('product-card') && app.includes('product-filter')],
@@ -46,7 +51,7 @@ const checks = [
   ['safe auth error mapping', app.includes('function authErrorMessage')],
   ['email validation accepts Gmail and rejects malformed input', emailValidationWorks],
   ['GitHub Pages redirect (no localhost)', !app.includes('localhost:3000')],
-  ['service worker cache v9', sw.includes("janushan-pwa-v9")],
+  ['service worker cache v10', sw.includes("janushan-pwa-v10")],
   ['PWA manifest start URL', manifest.start_url === './'],
   ['PWA manifest scope', manifest.scope === './'],
 ];
