@@ -50,3 +50,30 @@ The application passes the published GitHub Pages base URL to both sign-up confi
 - Review Supabase Security Advisor notices and enable leaked-password protection.
 
 Only the Supabase publishable key is used in the browser. Never commit a service-role or secret key.
+
+
+## Release 2026.11.14.2 — authentication and email delivery
+
+- Existing accounts should sign in; do not repeatedly register the same email address.
+- Use **Forgot password** to request a password recovery link. The app now keeps the recovery screen separate from normal business setup and validates that a recovery session exists before changing the password.
+- An unconfirmed account can request another confirmation email from the sign-in screen. Wait at least 60 seconds between email requests.
+- Authentication errors are translated into clearer guidance in Tamil, Sinhala and English.
+- The service-worker cache has been incremented so installed PWAs fetch the new release assets.
+
+### Required production email configuration
+
+Supabase's built-in email sender is intended for limited testing and is not a reliable production mail service. Configure a dedicated SMTP provider before inviting customers or staff:
+
+1. Open Supabase Dashboard → Authentication → SMTP Settings.
+2. Enable **Custom SMTP**.
+3. Enter the SMTP host, port, username, password, sender name and sender email supplied by your email provider.
+4. Use the provider's verified sender/domain and complete its DNS authentication (SPF/DKIM, and DMARC where supported).
+5. Save the settings, then use Authentication → Email Templates to review the confirmation and password-recovery messages.
+6. In Authentication → URL Configuration, keep the Site URL and redirect allow-list set to the published GitHub Pages URL shown above.
+7. Test one confirmation and one password-reset message to a real inbox. Check the provider's delivery/bounce logs as well as Supabase Auth logs.
+
+Do not put SMTP credentials, service-role keys or secret keys in this public repository or in browser JavaScript. SMTP credentials belong only in Supabase's dashboard.
+
+### Release checks
+
+Run `npm test` to validate JavaScript syntax, required authentication handlers, the manifest and the nine committed brand assets.
