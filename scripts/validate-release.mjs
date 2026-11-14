@@ -76,7 +76,7 @@ const checks = [
   ['safe auth error mapping', app.includes('function authErrorMessage')],
   ['email validation accepts Gmail and rejects malformed input', emailValidationWorks],
   ['GitHub Pages redirect (no localhost)', !app.includes('localhost:3000')],
-  ['service worker cache v16 with user-approved update activation', sw.includes('janushan-pwa-v15') && sw.includes('cache:') && sw.includes('SKIP_WAITING')],
+  ['service worker cache v16 with user-approved update activation', sw.includes('janushan-pwa-v16') && sw.includes('cache:') && sw.includes('SKIP_WAITING')],
   ['separate Reports workspace with selectable reviewed count pairs', app.includes('function reportsPage(v)') && app.includes('janReportOpening') && app.includes('janReportClosing')],
   ['stock count is a dedicated workflow with duplicate-day protection', app.includes('CountAlreadySubmitted') && app.includes('todayCount')],
   ['daily cash close-out validates a blank amount', app.includes("raw.trim()===''") && app.includes('save_daily_cash_entry')],
