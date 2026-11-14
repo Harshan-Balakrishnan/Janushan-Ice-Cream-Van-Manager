@@ -108,6 +108,27 @@ function modal(title,body,fn,options={}){
 }
 
 function appRedirect(){return new URL('./',window.location.href).href}
+function authErrorMessage(error){
+ const code=String(error?.code||'').toLowerCase(),message=String(error?.message||'').toLowerCase();
+ if(code==='invalid_credentials'||message.includes('invalid login credentials'))return tr('InvalidCredentials');
+ if(code==='email_not_confirmed'||message.includes('email not confirmed'))return tr('EmailNotConfirmed');
+ if(code==='email_address_not_authorized'||message.includes('email address not authorized'))return tr('EmailNotAuthorized');
+ if(code==='over_email_send_rate_limit'||error?.status===429||message.includes('rate limit'))return tr('EmailRateLimited');
+ if(code==='user_already_exists'||message.includes('already registered')||message.includes('already exists'))return tr('AccountExists');
+ return error?.message||tr('AuthError');
+}
+async function resendConfirmation(email){
+ if(!email||!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email))throw Error(tr('EnterEmail'));
+ const {error}=await db.auth.resend({type:'signup',email,options:{emailRedirectTo:appRedirect()}});
+ if(error)throw error;
+}
+function showPendingConfirmation(email){
+ const logo='<img class="brand-logo" src="./assets/logo.webp" alt="Janushan Ice Cream" onerror="this.onerror=null;this.src=\\'./icon.svg\\'">';
+ $('#app').innerHTML='<div class="login"><div class="login-card">'+logo+'<h2>Janushan Ice Cream</h2><p class="muted">'+tr('EmailPending')+'</p><p>'+esc(email)+'</p><button class="btn" id="resend-confirmation" style="width:100%">'+tr('ResendConfirmation')+'</button><button class="text-button" id="back-login">Back to sign in</button>'+languageButtons()+'<small class="app-version">'+tr('AppVersion')+'</small></div></div>';
+ bindLanguages();
+ $('#resend-confirmation').onclick=async()=>{const b=$('#resend-confirmation');b.disabled=true;try{await resendConfirmation(email);toast(tr('ResendSent'))}catch(e){toast(authErrorMessage(e))}finally{b.disabled=false}};
+ $('#back-login').onclick=()=>login();
+}
 function languageButtons(){return '<div class="language-switch"><button data-lang="ta">தமிழ்</button><button data-lang="si">සිංහල</button><button data-lang="en">English</button></div>'}
 function bindLanguages(){document.querySelectorAll('[data-lang]').forEach(b=>{b.classList.toggle('selected',b.dataset.lang===lang);b.onclick=()=>{lang=b.dataset.lang;localStorage.janLang=lang;if(user&&biz)layout();else login()}})}
 function login(mode='login',notice=''){
