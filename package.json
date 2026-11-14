@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check app.js",
+    "check": "node --check app.js && node scripts/validate-release.mjs",
     "test": "npm run check"
   }
 }
