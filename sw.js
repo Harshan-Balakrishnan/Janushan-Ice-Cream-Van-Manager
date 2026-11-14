@@ -1,4 +1,4 @@
-const CACHE='janushan-pwa-v10';
+const CACHE='janushan-pwa-v11';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon.svg','./assets/logo.webp','./assets/menu-banner.webp','./assets/waffle-boat.webp','./assets/special-cup.webp','./assets/strawberry-cup.webp','./assets/ice-choc.webp','./assets/cone.webp'];
 self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.all(ASSETS.map(path=>cache.add(path).catch(()=>null)));await self.skipWaiting()})()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('janushan-pwa-')&&key!==CACHE).map(key=>caches.delete(key)));await self.clients.claim()})()));
