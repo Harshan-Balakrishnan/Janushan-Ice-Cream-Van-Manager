@@ -25,6 +25,12 @@ const emailValidationWorks =
   !emailPattern.test('name@');
 
 const checks = [
+  ['dashboard date-range analytics', app.includes('periodSales') && app.includes('data-range')],
+  ['transparent estimated profit cost coverage', app.includes('unit_cost_snapshot') && app.includes('ProfitNote')],
+  ['printable itemised receipts', app.includes('function printReceipt') && app.includes('data-print')],
+  ['sales CSV export', app.includes('function downloadCsv') && app.includes('export-sales')],
+  ['stock search and low-stock filter', app.includes('janStockSearch') && app.includes('janStockLowOnly')],
+  ['active products only in point of sale', app.includes('products.filter(p=>p.active&&availableStock(p.id)>0)')],
   ['mobile five-item navigation and overflow menu', app.includes('mobilePrimaryNav') && app.includes('more-menu')],
   ['dashboard quick actions and empty catalogue guidance', app.includes('QuickActions') && app.includes('StartCatalogue')],
   ['responsive product cards and search', app.includes('product-card') && app.includes('product-filter')],
@@ -37,7 +43,7 @@ const checks = [
   ['safe auth error mapping', app.includes('function authErrorMessage')],
   ['email validation accepts Gmail and rejects malformed input', emailValidationWorks],
   ['GitHub Pages redirect (no localhost)', !app.includes('localhost:3000')],
-  ['service worker cache v7', sw.includes("janushan-pwa-v7")],
+  ['service worker cache v8', sw.includes("janushan-pwa-v8")],
   ['PWA manifest start URL', manifest.start_url === './'],
   ['PWA manifest scope', manifest.scope === './'],
 ];
