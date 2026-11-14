@@ -25,6 +25,12 @@ const emailValidationWorks =
   !emailPattern.test('name@');
 
 const checks = [
+  ['owner review signals use recorded cash and expense baselines', app.includes('Unusually high cash close-out') && app.includes('Expense spike') && app.includes('median')],
+  ['cash forecast is based on recorded business outings', app.includes('Next 7 business outings') && app.includes('Next 30 business outings') && app.includes('avgPerOuting')],
+  ['owner report can be printed or saved as PDF', app.includes('owner-print') && app.includes('window.print()')],
+  ['staff activity uses authenticated member audit events', app.includes('business_activity_events') && app.includes('log_business_activity') && app.includes('actor_user_id')],
+  ['activity migration is additive and owner-read restricted', fs.existsSync('supabase/migrations/20261114_business_activity_log.sql') && fs.readFileSync('supabase/migrations/20261114_business_activity_log.sql','utf8').includes('Owners can read business activity events')],
+
   ['owner intelligence centre is owner-only and uses existing business records', app.includes("async function ownerCentrePage(v)") && app.includes("role!=='owner'") && app.includes("else if(page==='Owner centre')ownerCentrePage(v)")],
   ['owner intelligence preserves no-individual-sales operating workflow', app.includes('No individual sales or staff sales targets are used.') && app.includes('net_cash_after_expenses') && app.includes('periodReconciliation')],
   ['owner financial report exports cash, expenses and stock reconciliation', app.includes('janushan-owner-financial-report-') && app.includes('Estimated gross cash collected')],
