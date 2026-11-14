@@ -415,3 +415,17 @@ td strong{font-weight:800;color:var(--ink)}
 .owner-actions{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 20px}
 @media(max-width:1050px){.owner-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.owner-grid{grid-template-columns:1fr}.owner-finance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.owner-heading .heading-actions{display:grid;grid-template-columns:1fr 1fr;align-items:end}.owner-period-label{min-width:0}.owner-period-label select{width:100%;min-width:0}.owner-kpi{padding:14px}.owner-panel{padding:16px}.owner-category-row{grid-template-columns:76px minmax(20px,1fr) auto;gap:6px}.owner-finance-grid{grid-template-columns:1fr 1fr}.owner-actions>*{flex:1 1 100%}}
+
+/* Advanced owner intelligence: alerts, run-rate forecast and print report */
+.owner-alert-row{display:flex;gap:11px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #edf0f5}
+.owner-alert-row:last-child{border-bottom:0}
+.owner-alert-mark{display:grid;place-items:center;flex:0 0 25px;height:25px;border-radius:8px;background:#fff1dc;color:#986016;font-weight:900}
+.alert-review .owner-alert-mark{background:#ffebeb;color:#a53c3c}
+.owner-alert-row>div{display:grid;gap:4px;min-width:0}
+.owner-alert-row strong{font-size:.72rem;color:var(--ink)}
+.owner-alert-row small{font-size:.66rem;line-height:1.45;color:var(--muted)}
+.owner-forecast-main{display:grid;gap:7px;padding:17px;border:1px solid #dce9ff;border-radius:13px;background:#f3f7ff}
+.owner-forecast-main span{font-size:.68rem;color:#526985;font-weight:800}
+.owner-forecast-main strong{font-size:1.55rem;letter-spacing:-.04em;color:#173c76}
+.owner-forecast-main small{font-size:.65rem;color:#63758b}
+@media print{.side,.top,.owner-actions,.heading-actions{display:none!important}.main{margin:0!important}.content{padding:0!important}}
