@@ -34,7 +34,7 @@ const checks = [
   ['owner intelligence centre is owner-only and uses existing business records', app.includes("async function ownerCentrePage(v)") && app.includes("role!=='owner'") && app.includes("else if(page==='Owner centre')ownerCentrePage(v)")],
   ['owner intelligence preserves no-individual-sales operating workflow', app.includes('No individual sales or staff sales targets are used.') && app.includes('net_cash_after_expenses') && app.includes('periodReconciliation')],
   ['owner financial report exports cash, expenses and stock reconciliation', app.includes('janushan-owner-financial-report-') && app.includes('Estimated gross cash collected')],
-  ['staff performance avoids invented attribution', app.includes('Attribution is based only on member IDs present in existing records.') && app.includes('Staff-level attribution is not available')],
+  ['staff activity is tied to authenticated audit events, without sales scoring', app.includes('event.actor_user_id') && app.includes('No attributable staff actions in this period.') && app.includes('Counts include only actions recorded after activity logging is enabled.')],
   ['owner centre responsive styles', fs.readFileSync('styles.css', 'utf8').includes('.owner-kpis') && fs.readFileSync('styles.css', 'utf8').includes('.owner-grid')],
 
   ['daily net cash entries use secure database RPC', app.includes('save_daily_cash_entry') && app.includes('daily_cash_entries')],
@@ -63,7 +63,7 @@ const checks = [
   ['safe auth error mapping', app.includes('function authErrorMessage')],
   ['email validation accepts Gmail and rejects malformed input', emailValidationWorks],
   ['GitHub Pages redirect (no localhost)', !app.includes('localhost:3000')],
-  ['service worker cache v12 with user-approved update activation', sw.includes('janushan-pwa-v12') && sw.includes('cache:') && sw.includes('SKIP_WAITING')],
+  ['service worker cache v13 with user-approved update activation', sw.includes('janushan-pwa-v13') && sw.includes('cache:') && sw.includes('SKIP_WAITING')],
   ['separate Reports workspace with selectable reviewed count pairs', app.includes('function reportsPage(v)') && app.includes('janReportOpening') && app.includes('janReportClosing')],
   ['stock count is a dedicated workflow with duplicate-day protection', app.includes('CountAlreadySubmitted') && app.includes('todayCount')],
   ['daily cash close-out validates a blank amount', app.includes("raw.trim()===''") && app.includes('save_daily_cash_entry')],
