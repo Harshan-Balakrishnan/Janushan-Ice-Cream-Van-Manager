@@ -1,1 +1,24 @@
-{"name":"Janushan Ice Cream Van Manager","short_name":"Janushan Van","start_url":"./","scope":"./","display":"standalone","background_color":"#f4f7fb","theme_color":"#101827","orientation":"portrait","icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
+{
+  "name": "Janushan Ice Cream Van Manager",
+  "short_name": "Janushan Van",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#1559d6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./assets/logo.webp",
+      "sizes": "any",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,1 +1,9 @@
-{"name":"janushan-ice-cream-van-manager","private":true,"type":"module","scripts":{"check":"node --check app.js"}}
+{
+  "name": "janushan-ice-cream-van-manager",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check app.js",
+    "test": "npm run check"
+  }
+}
