@@ -698,5 +698,34 @@ async function teamPage(v){let {data,error}=await db.rpc('list_business_members'
 db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){authRecoveryActive=false;login()}if(event==='PASSWORD_RECOVERY'){authRecoveryActive=true;login('new-password')}});
 window.addEventListener('online',async()=>{updateNetworkState();toast(tr('Online'));if(user&&biz){try{await syncPendingSales();await load();render()}catch(e){toast(e.message)}}});
 window.addEventListener('offline',()=>{updateNetworkState();toast(tr('Offline'))});
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+function installUpdateExperience(reg){
+ const announce=()=>{
+  if(!reg.waiting||document.getElementById('jan-update-banner'))return;
+  const banner=document.createElement('aside');
+  banner.id='jan-update-banner';banner.className='update-banner';banner.setAttribute('role','status');
+  banner.innerHTML='<span class="update-spark" aria-hidden="true">✦</span><span class="update-copy"><strong>New Janushan update ready</strong><small>Your records stay in the cloud. Save or finish any open form before refreshing.</small></span><button type="button" class="btn btn-small" id="jan-apply-update">Update now</button><button type="button" class="update-dismiss" aria-label="Dismiss update">×</button>';
+  document.body.append(banner);
+  banner.querySelector('.update-dismiss').onclick=()=>banner.remove();
+  banner.querySelector('#jan-apply-update').onclick=()=>{
+   if(!confirm('Apply the new version now? Save any unfinished form first.'))return;
+   banner.querySelector('#jan-apply-update').disabled=true;
+   reg.waiting?.postMessage({type:'SKIP_WAITING'});
+  };
+ };
+ if(reg.waiting)announce();
+ reg.addEventListener('updatefound',()=>{
+  const worker=reg.installing;if(!worker)return;
+  worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)announce()});
+ });
+}
+if('serviceWorker'in navigator){
+ let hadController=!!navigator.serviceWorker.controller;
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{
+  if(hadController){window.location.reload();return}
+  hadController=true;
+ });
+ navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'})
+  .then(reg=>{installUpdateExperience(reg);reg.update().catch(()=>{});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update().catch(()=>{})})})
+  .catch(()=>{});
+}
 boot().catch(e=>{toast(authErrorMessage(e));if(!navigator.onLine){const last=localStorage.getItem('janushan.lastUser');if(last&&restoreSnapshot(last)){layout();toast(tr('OfflineReadOnly'));return}}login('login',authRecoveryActive?tr('RecoveryLinkInvalid'):'')});
