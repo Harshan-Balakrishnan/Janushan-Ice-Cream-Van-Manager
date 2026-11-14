@@ -338,3 +338,23 @@ td strong{font-weight:800;color:var(--ink)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 [data-theme=berry]{--blue:#a32d70;--blue-dark:#832358;--navy:#441b35}
 [data-theme=cream]{--blue:#9b6728;--blue-dark:#7d511b;--navy:#49321e}
+
+/* Janushan premium motion system */
+:root{--motion-fast:150ms;--motion-smooth:260ms}
+@keyframes janFadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes janSoftIn{from{opacity:0}to{opacity:1}}
+#view{animation:janFadeUp var(--motion-smooth) cubic-bezier(.2,.75,.25,1) both}
+.panel,.card,.product-card{transition:transform var(--motion-fast) ease,box-shadow var(--motion-fast) ease,border-color var(--motion-fast) ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(23,36,58,.09)}
+.btn:active,.pill:active{transform:scale(.98)}
+.nav-item,.mobile-nav button{transition:background var(--motion-fast) ease,color var(--motion-fast) ease,transform var(--motion-fast) ease}
+.modal-bg{animation:janSoftIn var(--motion-fast) ease both}
+.modal{animation:janFadeUp var(--motion-smooth) cubic-bezier(.2,.75,.25,1) both}
+.update-banner{position:fixed;z-index:130;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(720px,calc(100vw - 24px));display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid #cddbf9;border-radius:16px;background:rgba(255,255,255,.97);box-shadow:0 16px 50px rgba(16,33,61,.2);backdrop-filter:blur(16px);animation:janFadeUp .25s ease both}
+.update-spark{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:11px;background:#edf2ff;color:#315cf5;font-size:19px}
+.update-copy{display:grid;gap:3px;flex:1;min-width:0}
+.update-copy strong{font-size:.8rem;color:#17243a}
+.update-copy small{font-size:.68rem;color:#6c7a90;line-height:1.35}
+.update-dismiss{width:32px;height:32px;border:0;border-radius:9px;background:#f1f4f9;color:#6c7a90;font-size:20px}
+@media(max-width:560px){.update-banner{align-items:flex-start;gap:8px;padding:11px}.update-banner .btn{min-height:36px;padding:7px 9px;font-size:.68rem}.update-copy small{font-size:.62rem}}
+@media(prefers-reduced-motion:reduce){#view,.modal-bg,.modal,.update-banner{animation:none!important}.card:hover{transform:none}}

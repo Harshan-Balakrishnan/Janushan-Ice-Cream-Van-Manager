@@ -77,3 +77,14 @@ Do not put SMTP credentials, service-role keys or secret keys in this public rep
 ### Release checks
 
 Run `npm test` to validate JavaScript syntax, required authentication handlers, the manifest and the nine committed brand assets.
+
+## Release 2026.11.14.3 — premium PWA update delivery
+
+- Versioned app-shell cache so published JavaScript and CSS refresh instead of being pinned to an old cache-first response.
+- Network-first app-shell delivery with cached fallback for offline launches.
+- New service workers wait until a user approves the update, avoiding an automatic mid-form refresh.
+- Installed clients check for updates on launch and when returning to the foreground. When an update is ready, the app displays an update banner; applying it reloads the app into the new version.
+- Added a restrained motion system and reduced-motion support.
+- Updated the install manifest to use dedicated 192px and 512px PNG icons.
+
+**Update behaviour:** a PWA cannot silently force an update while fully closed or offline. Browsers check and install the new service worker when the installed app next opens or becomes active online. The app then asks before reloading so unfinished form input is not discarded.
