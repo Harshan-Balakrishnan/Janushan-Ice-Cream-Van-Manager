@@ -59,6 +59,8 @@ function updateNetworkState(){
 }
 async function syncPendingSales(){
  if(!navigator.onLine||!user?.id||!biz?.id)return;
+ const authState=await db.auth.getSession();
+ if(authState.error||authState.data?.session?.user?.id!==user.id)return;
  const queue=loadPendingSales(user.id);if(!queue.length)return;
  const remaining=[];
  for(let i=0;i<queue.length;i++){
