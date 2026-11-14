@@ -15,6 +15,11 @@ const requiredAssets = [
 const app = fs.readFileSync('app.js', 'utf8');
 const manifest = JSON.parse(fs.readFileSync('manifest.webmanifest', 'utf8'));
 const sw = fs.readFileSync('sw.js', 'utf8');
+const emailRegexSources = [...app.matchAll(/!\\/(.*?)\\/\\.test\\(email\\)/g)].map(match => match[1]);
+const emailValidationWorks = emailRegexSources.length === 2 && emailRegexSources.every(source => {
+  const pattern = new RegExp(source);
+  return pattern.test('janushan.test@gmail.com') && !pattern.test('not an email');
+});
 const checks = [
   ['password recovery event', app.includes("PASSWORD_RECOVERY")],
   ['recovery screen state', app.includes('authRecoveryActive')],
@@ -22,8 +27,9 @@ const checks = [
   ['resend confirmation handler', app.includes("db.auth.resend({type:'signup'")],
   ['password reset request', app.includes('db.auth.resetPasswordForEmail')],
   ['safe auth error mapping', app.includes('function authErrorMessage')],
+  ['email validation accepts Gmail and rejects malformed input', emailValidationWorks],
   ['GitHub Pages redirect (no localhost)', !app.includes('localhost:3000')],
-  ['service worker cache v5', sw.includes("janushan-pwa-v5")],
+  ['service worker cache v5', sw.includes("janushan-pwa-v6")],
   ['PWA manifest start URL', manifest.start_url === './'],
   ['PWA manifest scope', manifest.scope === './'],
 ];
