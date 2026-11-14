@@ -124,7 +124,7 @@ async function resendConfirmation(email){
  if(error)throw error;
 }
 function showPendingConfirmation(email){
- const logo='<img class="brand-logo" src="./assets/logo.webp" alt="Janushan Ice Cream" onerror="this.onerror=null;this.src=\\'./icon.svg\\'">';
+ const logo='<img class="brand-logo" src="./assets/logo.webp" alt="Janushan Ice Cream" onerror="this.onerror=null;this.src=\'./icon.svg\'">';
  $('#app').innerHTML='<div class="login"><div class="login-card">'+logo+'<h2>Janushan Ice Cream</h2><p class="muted">'+tr('EmailPending')+'</p><p>'+esc(email)+'</p><button class="btn" id="resend-confirmation" style="width:100%">'+tr('ResendConfirmation')+'</button><button class="text-button" id="back-login">Back to sign in</button>'+languageButtons()+'<small class="app-version">'+tr('AppVersion')+'</small></div></div>';
  bindLanguages();
  $('#resend-confirmation').onclick=async()=>{const b=$('#resend-confirmation');b.disabled=true;try{await resendConfirmation(email);toast(tr('ResendSent'))}catch(e){toast(authErrorMessage(e))}finally{b.disabled=false}};
@@ -133,7 +133,7 @@ function showPendingConfirmation(email){
 function languageButtons(){return '<div class="language-switch"><button data-lang="ta">தமிழ்</button><button data-lang="si">සිංහල</button><button data-lang="en">English</button></div>'}
 function bindLanguages(){document.querySelectorAll('[data-lang]').forEach(b=>{b.classList.toggle('selected',b.dataset.lang===lang);b.onclick=()=>{lang=b.dataset.lang;localStorage.janLang=lang;if(user&&biz)layout();else login()}})}
 function login(mode='login',notice=''){
- const logo='<img class="brand-logo" src="./assets/logo.webp" alt="Janushan Ice Cream logo" onerror="this.onerror=null;this.src=\\'./icon.svg\\'">';
+ const logo='<img class="brand-logo" src="./assets/logo.webp" alt="Janushan Ice Cream logo" onerror="this.onerror=null;this.src=\'./icon.svg\'">';
  const title=mode==='signup'?tr('CreateAccount'):mode==='reset'?tr('Forgot'):mode==='new-password'?tr('SetNewPassword'):tr('SignIn');
  let form='';
  if(mode!=='new-password')form+=field(tr('Email'),'email','email','','autocomplete="email"');
