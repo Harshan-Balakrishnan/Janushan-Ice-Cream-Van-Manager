@@ -119,7 +119,7 @@ function authErrorMessage(error){
  return error?.message||tr('AuthError');
 }
 async function resendConfirmation(email){
- if(!email||!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email))throw Error(tr('EnterEmail'));
+ if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw Error(tr('EnterEmail'));
  const {error}=await db.auth.resend({type:'signup',email,options:{emailRedirectTo:appRedirect()}});
  if(error)throw error;
 }
@@ -150,7 +150,7 @@ function login(mode='login',notice=''){
   $('#resend').onclick=async()=>{const b=$('#resend');b.disabled=true;try{await resendConfirmation($('#email').value.trim());toast(tr('ResendSent'))}catch(e){toast(authErrorMessage(e))}finally{b.disabled=false}};
   $('#mode').onclick=()=>login('signup');
  }else if(mode==='signup'){
-  $('#signup').onclick=async()=>{const b=$('#signup');b.disabled=true;try{const email=$('#email').value.trim(),password=$('#password').value;if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email))throw Error(tr('InvalidEmail'));if(password.length<8)throw Error(tr('ShortPassword'));if(password!==$('#confirm-password').value)throw Error(tr('PasswordsMismatch'));const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:appRedirect(),data:{business_name:'Janushan Ice Cream'}}});if(error)throw error;if(data?.user?.identities?.length===0){login('login',tr('AccountExists'));return}if(data?.session){authRecoveryActive=false;await boot();return}showPendingConfirmation(email)}catch(e){toast(authErrorMessage(e))}finally{if($('#signup'))$('#signup').disabled=false}};
+  $('#signup').onclick=async()=>{const b=$('#signup');b.disabled=true;try{const email=$('#email').value.trim(),password=$('#password').value;if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw Error(tr('InvalidEmail'));if(password.length<8)throw Error(tr('ShortPassword'));if(password!==$('#confirm-password').value)throw Error(tr('PasswordsMismatch'));const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:appRedirect(),data:{business_name:'Janushan Ice Cream'}}});if(error)throw error;if(data?.user?.identities?.length===0){login('login',tr('AccountExists'));return}if(data?.session){authRecoveryActive=false;await boot();return}showPendingConfirmation(email)}catch(e){toast(authErrorMessage(e))}finally{if($('#signup'))$('#signup').disabled=false}};
   $('#mode').onclick=()=>login();
  }else if(mode==='new-password'){
   $('#save-new-password').onclick=async()=>{const b=$('#save-new-password');b.disabled=true;try{const sr=await db.auth.getSession();if(sr.error)throw sr.error;if(!sr.data?.session)throw Error(tr('RecoveryLinkInvalid'));const password=$('#password').value;if(password.length<8)throw Error(tr('ShortPassword'));if(password!==$('#confirm-password').value)throw Error(tr('PasswordsMismatch'));const {error}=await db.auth.updateUser({password});if(error)throw error;authRecoveryActive=false;const clean=new URL(location.href);clean.hash='';['code','type','token_hash','next'].forEach(k=>clean.searchParams.delete(k));history.replaceState({},document.title,clean.pathname+clean.search);await db.auth.signOut();login('login',tr('PasswordUpdated'))}catch(e){toast(authErrorMessage(e))}finally{if($('#save-new-password'))$('#save-new-password').disabled=false}};
